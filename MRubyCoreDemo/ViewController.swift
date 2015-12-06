@@ -21,6 +21,10 @@ class ViewController: UIViewController {
         print(context.evaluateScript("'a'"))
         print(context.evaluateScript("1.2 * x"))
         print(context.evaluateScript("p 'hello'"))
+        print(context.evaluateScript("nil"))
+        print(context.evaluateScript("false"))
+        print(context.evaluateScript("true"))
+        print(context.evaluateScript("1 + y"))
     }
 
     override func didReceiveMemoryWarning() {

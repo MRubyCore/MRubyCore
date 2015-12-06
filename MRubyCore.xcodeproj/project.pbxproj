@@ -21,6 +21,8 @@
 		8C19BD8D1C11658A00B5635D /* misc.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C19BD8C1C11652500B5635D /* misc.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C19BD8F1C11695100B5635D /* MRBValueConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C19BD8E1C11695100B5635D /* MRBValueConvertible.swift */; };
 		8C19BD911C116D6300B5635D /* MRBSymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C19BD901C116D6300B5635D /* MRBSymbol.swift */; };
+		8C2073D81C147146005C5C81 /* MRBNil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2073D71C147146005C5C81 /* MRBNil.swift */; };
+		8C2073DA1C1472FE005C5C81 /* MRBPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2073D91C1472FE005C5C81 /* MRBPlaceholder.swift */; };
 		8C86E6FC1C14283000A58FCA /* MRuby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C86E6FB1C14283000A58FCA /* MRuby.framework */; };
 /* End PBXBuildFile section */
 
@@ -65,6 +67,8 @@
 		8C19BD8C1C11652500B5635D /* misc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = misc.h; sourceTree = "<group>"; };
 		8C19BD8E1C11695100B5635D /* MRBValueConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRBValueConvertible.swift; sourceTree = "<group>"; };
 		8C19BD901C116D6300B5635D /* MRBSymbol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRBSymbol.swift; sourceTree = "<group>"; };
+		8C2073D71C147146005C5C81 /* MRBNil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRBNil.swift; sourceTree = "<group>"; };
+		8C2073D91C1472FE005C5C81 /* MRBPlaceholder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRBPlaceholder.swift; sourceTree = "<group>"; };
 		8C86E6FB1C14283000A58FCA /* MRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MRuby.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -131,6 +135,8 @@
 				8C19BD8A1C11639100B5635D /* MRBValue.swift */,
 				8C19BD8E1C11695100B5635D /* MRBValueConvertible.swift */,
 				8C19BD901C116D6300B5635D /* MRBSymbol.swift */,
+				8C2073D71C147146005C5C81 /* MRBNil.swift */,
+				8C2073D91C1472FE005C5C81 /* MRBPlaceholder.swift */,
 			);
 			path = MRubyCore;
 			sourceTree = "<group>";
@@ -270,7 +276,9 @@
 				8C19BD871C11606B00B5635D /* MRBValueType.swift in Sources */,
 				8C19BD8B1C11639100B5635D /* MRBValue.swift in Sources */,
 				8C19BD911C116D6300B5635D /* MRBSymbol.swift in Sources */,
+				8C2073DA1C1472FE005C5C81 /* MRBPlaceholder.swift in Sources */,
 				8C19BD8F1C11695100B5635D /* MRBValueConvertible.swift in Sources */,
+				8C2073D81C147146005C5C81 /* MRBNil.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

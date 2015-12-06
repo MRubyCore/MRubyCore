@@ -27,6 +27,13 @@ public struct MRBSymbol: MRBValueConvertible, StringLiteralConvertible, CustomSt
         self.text = value
     }
 
+    public init!(value: MRBValue) {
+        guard value.valueType == .Symbol else { return nil }
+
+        let cstr = MRB_Symname(value.context.state, value.rawValue)
+        self.init(text: String(CString: cstr, encoding: NSUTF8StringEncoding)!)
+    }
+
     public var description: String {
         return ":\(text)"
     }
