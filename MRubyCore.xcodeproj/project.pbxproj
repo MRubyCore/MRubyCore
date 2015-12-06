@@ -15,13 +15,13 @@
 		8C19BD701C113B5F00B5635D /* MRubyCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C19BD6F1C113B5F00B5635D /* MRubyCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C19BD741C113B5F00B5635D /* MRubyCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C19BD6D1C113B5E00B5635D /* MRubyCore.framework */; };
 		8C19BD751C113B5F00B5635D /* MRubyCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8C19BD6D1C113B5E00B5635D /* MRubyCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		8C19BD811C113C1900B5635D /* MRuby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C19BD3F1C10191800B5635D /* MRuby.framework */; };
 		8C19BD871C11606B00B5635D /* MRBValueType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C19BD861C11606B00B5635D /* MRBValueType.swift */; };
 		8C19BD891C1162E400B5635D /* MRBContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C19BD881C1162E400B5635D /* MRBContext.swift */; };
 		8C19BD8B1C11639100B5635D /* MRBValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C19BD8A1C11639100B5635D /* MRBValue.swift */; };
 		8C19BD8D1C11658A00B5635D /* misc.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C19BD8C1C11652500B5635D /* misc.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C19BD8F1C11695100B5635D /* MRBValueConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C19BD8E1C11695100B5635D /* MRBValueConvertible.swift */; };
 		8C19BD911C116D6300B5635D /* MRBSymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C19BD901C116D6300B5635D /* MRBSymbol.swift */; };
+		8C86E6FC1C14283000A58FCA /* MRuby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C86E6FB1C14283000A58FCA /* MRuby.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,7 +49,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		8C19BD3F1C10191800B5635D /* MRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MRuby.framework; sourceTree = "<group>"; };
 		8C19BD451C101A5C00B5635D /* MRubyCoreDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MRubyCoreDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C19BD471C101A5C00B5635D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8C19BD491C101A5C00B5635D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -66,6 +65,7 @@
 		8C19BD8C1C11652500B5635D /* misc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = misc.h; sourceTree = "<group>"; };
 		8C19BD8E1C11695100B5635D /* MRBValueConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRBValueConvertible.swift; sourceTree = "<group>"; };
 		8C19BD901C116D6300B5635D /* MRBSymbol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRBSymbol.swift; sourceTree = "<group>"; };
+		8C86E6FB1C14283000A58FCA /* MRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MRuby.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,7 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C19BD811C113C1900B5635D /* MRuby.framework in Frameworks */,
+				8C86E6FC1C14283000A58FCA /* MRuby.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,7 +91,7 @@
 		8C19BD1B1C10185300B5635D = {
 			isa = PBXGroup;
 			children = (
-				8C19BD3F1C10191800B5635D /* MRuby.framework */,
+				8C86E6FD1C1428EA00A58FCA /* vendor */,
 				8C19BD6E1C113B5F00B5635D /* MRubyCore */,
 				8C19BD461C101A5C00B5635D /* MRubyCoreDemo */,
 				8C19BD261C10185300B5635D /* Products */,
@@ -133,6 +133,14 @@
 				8C19BD901C116D6300B5635D /* MRBSymbol.swift */,
 			);
 			path = MRubyCore;
+			sourceTree = "<group>";
+		};
+		8C86E6FD1C1428EA00A58FCA /* vendor */ = {
+			isa = PBXGroup;
+			children = (
+				8C86E6FB1C14283000A58FCA /* MRuby.framework */,
+			);
+			path = vendor;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -393,6 +401,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/vendor",
 				);
 				INFOPLIST_FILE = MRubyCoreDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -409,6 +418,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/vendor",
 				);
 				INFOPLIST_FILE = MRubyCoreDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -427,7 +437,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/vendor",
 				);
 				INFOPLIST_FILE = MRubyCore/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -449,7 +459,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/vendor",
 				);
 				INFOPLIST_FILE = MRubyCore/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -488,6 +498,7 @@
 				8C19BD781C113B5F00B5635D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
