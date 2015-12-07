@@ -12,21 +12,25 @@
 @import MRuby;
 @import Foundation;
 
-static enum mrb_vtype MRB_Type(mrb_value value) {
+static enum mrb_vtype MRBGetType(mrb_value value) {
     return mrb_type(value);
 }
 
-static mrb_int MRB_Fixnum(mrb_value value) {
+static mrb_int MRBReadFixnum(mrb_value value) {
     return mrb_fixnum(value);
 }
 
-static const char * MRB_Symname(mrb_state *state, mrb_value value) {
+static const char * MRBReadSymbol(mrb_state *state, mrb_value value) {
     mrb_sym sym = mrb_symbol(value);
     return mrb_sym2name(state, sym);
 }
 
-static mrb_float MRB_Float(mrb_value value) {
+static mrb_float MRBReadFloat(mrb_value value) {
     return mrb_float(value);
+}
+
+static mrb_value MRBFunCall0(mrb_state *state, mrb_value object, const char *method_name) {
+    return mrb_funcall(state, object, method_name, 0);
 }
 
 #endif /* misc_h */

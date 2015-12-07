@@ -23,6 +23,7 @@
 		8C19BD911C116D6300B5635D /* MRBSymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C19BD901C116D6300B5635D /* MRBSymbol.swift */; };
 		8C2073D81C147146005C5C81 /* MRBNil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2073D71C147146005C5C81 /* MRBNil.swift */; };
 		8C2073DA1C1472FE005C5C81 /* MRBPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2073D91C1472FE005C5C81 /* MRBPlaceholder.swift */; };
+		8C390C3D1C15795700DCE35F /* misc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C390C3C1C15795700DCE35F /* misc.swift */; };
 		8C86E6FC1C14283000A58FCA /* MRuby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C86E6FB1C14283000A58FCA /* MRuby.framework */; };
 /* End PBXBuildFile section */
 
@@ -69,6 +70,7 @@
 		8C19BD901C116D6300B5635D /* MRBSymbol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRBSymbol.swift; sourceTree = "<group>"; };
 		8C2073D71C147146005C5C81 /* MRBNil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRBNil.swift; sourceTree = "<group>"; };
 		8C2073D91C1472FE005C5C81 /* MRBPlaceholder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRBPlaceholder.swift; sourceTree = "<group>"; };
+		8C390C3C1C15795700DCE35F /* misc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = misc.swift; sourceTree = "<group>"; };
 		8C86E6FB1C14283000A58FCA /* MRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MRuby.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -130,6 +132,7 @@
 				8C19BD6F1C113B5F00B5635D /* MRubyCore.h */,
 				8C19BD711C113B5F00B5635D /* Info.plist */,
 				8C19BD8C1C11652500B5635D /* misc.h */,
+				8C390C3C1C15795700DCE35F /* misc.swift */,
 				8C19BD861C11606B00B5635D /* MRBValueType.swift */,
 				8C19BD881C1162E400B5635D /* MRBContext.swift */,
 				8C19BD8A1C11639100B5635D /* MRBValue.swift */,
@@ -273,6 +276,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8C19BD891C1162E400B5635D /* MRBContext.swift in Sources */,
+				8C390C3D1C15795700DCE35F /* misc.swift in Sources */,
 				8C19BD871C11606B00B5635D /* MRBValueType.swift in Sources */,
 				8C19BD8B1C11639100B5635D /* MRBValue.swift in Sources */,
 				8C19BD911C116D6300B5635D /* MRBSymbol.swift in Sources */,

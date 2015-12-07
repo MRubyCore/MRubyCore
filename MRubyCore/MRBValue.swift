@@ -19,7 +19,7 @@ public struct MRBValue: CustomDebugStringConvertible {
     }
 
     public var valueType: MRBValueType {
-        return MRBValueType(type: MRB_Type(rawValue), value: rawValue)
+        return MRBValueType(type: MRBGetType(rawValue), value: rawValue)
     }
 
     public var value: MRBValueConvertible {

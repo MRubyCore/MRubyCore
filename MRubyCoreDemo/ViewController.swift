@@ -14,21 +14,36 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let context = MRBContext()
-        print(context.evaluateScript("x = 1.0"))
-        print(context.evaluateScript(":a"))
-        print(context.evaluateScript("1 + 1"))
-        print(context.evaluateScript("'a'"))
-        print(context.evaluateScript("1.2 * x"))
-        print(context.evaluateScript("p 'hello'"))
-        print(context.evaluateScript("nil"))
-        print(context.evaluateScript("false"))
-        print(context.evaluateScript("true"))
-        print(context.evaluateScript("Proc.new { |n| n * n }"))
-        print(context.evaluateScript("String"))
-        print(context.evaluateScript("Kernel"))
-        print(context.evaluateScript("[1, 2.0, 'a']"))
-        print(context.evaluateScript("{a: 3, b: '7', :c => [36], 'd' => {}}"))
+        guard let context = try? MRBContext() else { return }
+
+        do {
+            print(try context.evaluateScript("1 + y"))
+        }
+        catch {
+            print(error)
+        }
+
+        do {
+            print(try context.evaluateScript("$stdout"))
+            print(try context.evaluateScript("x = 1.0"))
+            print(try context.evaluateScript(":a"))
+            print(try context.evaluateScript("1 + 1"))
+            print(try context.evaluateScript("'a'"))
+            print(try context.evaluateScript("1.2 * x"))
+            print(try context.evaluateScript("p 'hello'"))
+            print(try context.evaluateScript("nil"))
+            print(try context.evaluateScript("false"))
+            print(try context.evaluateScript("true"))
+            print(try context.evaluateScript("Proc.new { |n| n * n }"))
+            print(try context.evaluateScript("String"))
+            print(try context.evaluateScript("Kernel"))
+            print(try context.evaluateScript("[1, 2.0, 'a']"))
+            print(try context.evaluateScript("{a: 3, b: '7', :c => [36], 'd' => {}}"))
+            print(try context.evaluateScript("class"))
+        }
+        catch {
+            print(error)
+        }
     }
 
     override func didReceiveMemoryWarning() {

@@ -39,7 +39,7 @@ public enum MRBValueType: String {
     internal init(type: mrb_vtype, value: mrb_value) {
         switch type {
         case MRB_TT_FALSE:
-            if MRB_Fixnum(value) != 0 {
+            if MRBReadFixnum(value) != 0 {
                 self = .False
             }
             else {

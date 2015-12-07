@@ -13,11 +13,17 @@ public protocol MRBValueConvertible {
     init!(value: MRBValue)
 }
 
+public extension MRBValueConvertible {
+    init!(value: mrb_value, context: MRBContext) {
+        self.init(value: MRBValue(value: value, context: context))
+    }
+}
+
 extension mrb_int: MRBValueConvertible {
     public init!(value: MRBValue) {
         guard value.valueType == .FixNum else { return nil }
 
-        self = MRB_Fixnum(value.rawValue)
+        self = MRBReadFixnum(value.rawValue)
     }
 }
 
@@ -25,7 +31,7 @@ extension mrb_float: MRBValueConvertible {
     public init!(value: MRBValue) {
         guard value.valueType == .Float else { return nil }
 
-        self = MRB_Float(value.rawValue)
+        self = MRBReadFloat(value.rawValue)
     }
 }
 

@@ -10,12 +10,33 @@ import Foundation
 import MRuby
 
 public class MRBContext {
+    public enum Error: ErrorType {
+        case InternalError(message: String)
+        case ParseError(message: String)
+        case RuntimeException(message: String)
+    }
+
     internal let state: UnsafeMutablePointer<mrb_state>
     internal let context: UnsafeMutablePointer<mrbc_context>
 
-    public init() {
+    public init() throws {
         state = mrb_open()
+        if state.isNull {
+            context = UnsafeMutablePointer<mrbc_context>.null
+            throw Error.InternalError(message: "mrb_open() failed")
+        }
+
         context = mrbc_context_new(state)
+        if context.isNull {
+            mrb_close(state)
+            throw Error.InternalError(message: "mrbc_context_new() failed")
+        }
+
+        context.memory.capture_errors = 1
+        context.memory.lineno = 1
+
+        var filename = "(MRBContext) ".cStringUsingEncoding(NSUTF8StringEncoding)!
+        mrbc_filename(state, context, &filename)
     }
 
     deinit {
@@ -23,11 +44,107 @@ public class MRBContext {
         mrb_close(state)
     }
 
-    public func evaluateScript(script: String) -> MRBValue {
-        var s = script.cStringUsingEncoding(NSUTF8StringEncoding)!
-        let ps = mrb_parse_string(state, &s, context)
-        let proc = mrb_generate_code(state, ps)
+    public func evaluateScript(script: String) throws -> MRBValue {
+        let gc = mrb_gc_arena_save(state)
+        defer {
+            mrb_gc_arena_restore(state, gc)
+        }
+
+        let parser = try getParser(script)
+        defer {
+            mrb_parser_free(parser)
+        }
+
+        let proc = mrb_generate_code(state, parser)
+        guard proc != proc.dynamicType.init() else {
+            throw Error.ParseError(message: "failed to generate code")
+        }
+
         let value = mrb_run(state, proc, mrb_top_self(state))
+
+        // check for uncaught exception
+        if !state.memory.exc.isNull {
+            let message: String = MRBFunCall0(self, object: mrb_obj_value(state.memory.exc), methodName: "inspect")
+            state.memory.exc.setNull()
+            throw Error.RuntimeException(message: message)
+        }
+
         return MRBValue(value: value, context: self)
+    }
+
+    private func getParser(script: String) throws -> UnsafeMutablePointer<mrb_parser_state> {
+        // inspired by mrbgems/mruby-bin-mirb/tools/mirb/mirb.c
+
+        guard var s = script.cStringUsingEncoding(NSUTF8StringEncoding) else {
+            throw Error.ParseError(message: "invalid input string")
+        }
+
+        let parser = mrb_parser_new(state)
+
+        if parser.isNull {
+            throw Error.ParseError(message: "failed to create parser")
+        }
+
+        withUnsafePointer(&s[0]) {
+            parser.memory.s = $0
+            parser.memory.send = $0.advancedBy(s.count)
+        }
+
+        parser.memory.lineno = parser.memory.lineno.dynamicType.init(context.memory.lineno)
+        mrb_parser_parse(parser, context)
+
+        // unterminated heredoc
+        if !parser.memory.parsing_heredoc.isNull {
+            throw Error.ParseError(message: "unterminated heredoc")
+        }
+
+        // unterminated string
+        if !parser.memory.lex_strterm.isNull {
+            throw Error.ParseError(message: "unterminated string")
+        }
+
+        // parser error
+        if parser.memory.nerr != 0 {
+            let message = parser.memory.error_buffer.0.message.flatMap {
+                String(CString: $0, encoding: NSUTF8StringEncoding)
+            }
+
+            throw Error.ParseError(message: message ?? "syntax error")
+        }
+
+        switch parser.memory.lstate {
+        case EXPR_DOT:
+            throw Error.ParseError(message: "a message dot was the last token, there has to come more")
+        case EXPR_CLASS:
+            throw Error.ParseError(message: "a class keyword is not enough! we need also a name of the class")
+        case EXPR_FNAME:
+            throw Error.ParseError(message: "a method name is necessary")
+        case EXPR_VALUE:
+            throw Error.ParseError(message: "if, elsif, etc. without condition")
+        default:
+            break
+        }
+
+        return parser
+    }
+}
+
+private extension UnsafeMutablePointer {
+    static var null: UnsafeMutablePointer {
+        return self.init()
+    }
+
+    var isNull: Bool {
+        return self == self.dynamicType.null
+    }
+
+    mutating func setNull() {
+        self = self.dynamicType.null
+    }
+
+    func flatMap<U>(f: (UnsafeMutablePointer) throws -> U?) rethrows -> U? {
+        guard !isNull else { return nil }
+
+        return try f(self)
     }
 }
