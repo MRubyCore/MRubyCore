@@ -1,6 +1,0 @@
-framework module MRuby {
-  umbrella header "umbrella.h"
-
-  export *
-  module * { export * }
-}
