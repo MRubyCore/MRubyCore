@@ -64,7 +64,7 @@ public class MRBContext {
 
         // check for uncaught exception
         if !state.memory.exc.isNull {
-            let message: String = MRBFunCall0(self, object: mrb_obj_value(state.memory.exc), methodName: "inspect")
+            let message: String = MRBValue(value: mrb_obj_value(state.memory.exc), context: self).callMethod("inspect", withParameters: [])
             state.memory.exc.setNull()
             throw Error.RuntimeException(message: message)
         }

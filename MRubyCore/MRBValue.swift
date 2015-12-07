@@ -30,3 +30,20 @@ public struct MRBValue: CustomDebugStringConvertible {
         return "{MRBValue <\(valueType)> \(value) }"
     }
 }
+
+extension MRBValue {
+    public func callMethod<T: MRBValueConvertible>(name: String, withParameters parameters: [MRBValue]) -> T {
+        guard var s = name.cStringUsingEncoding(NSUTF8StringEncoding) else {
+            fatalError("invalid method name")
+        }
+
+        var params = parameters.map { $0.rawValue }
+        let returnValue = mrb_funcall_argv(context.state, rawValue, mrb_intern_cstr(context.state, &s), mrb_int(parameters.count), &params)
+
+        guard let result = T(value: returnValue, context: context) else {
+            fatalError("unmatched result type")
+        }
+
+        return result
+    }
+}

@@ -29,8 +29,4 @@ static mrb_float MRBReadFloat(mrb_value value) {
     return mrb_float(value);
 }
 
-static mrb_value MRBFunCall0(mrb_state *state, mrb_value object, const char *method_name) {
-    return mrb_funcall(state, object, method_name, 0);
-}
-
 #endif /* misc_h */
