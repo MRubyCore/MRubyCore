@@ -1,5 +1,5 @@
 //
-//  MRBValueType.swift
+//  MRBValue.selfType.swift
 //  MRubyCore
 //
 //  Created by Zhang Yi on 15/12/4.
@@ -75,29 +75,29 @@ public enum MRBValueType: String {
         switch self {
         case .Nil: return MRBNil.self
         case .False: return Bool.self
-        case .Free: return MRBPlaceHolder.self
+        case .Free: return MRBValue.self
         case .True: return Bool.self
         case .FixNum: return mrb_int.self
         case .Symbol: return MRBSymbol.self
-        case .Undef: return MRBPlaceHolder.self
+        case .Undef: return MRBValue.self
         case .Float: return mrb_float.self
-        case .CPtr: return MRBPlaceHolder.self
-        case .Object: return MRBPlaceHolder.self
-        case .Class: return MRBPlaceHolder.self
-        case .Module: return MRBPlaceHolder.self
-        case .IClass: return MRBPlaceHolder.self
-        case .SClass: return MRBPlaceHolder.self
-        case .Proc: return MRBPlaceHolder.self
-        case .Array: return MRBPlaceHolder.self
-        case .Hash: return MRBPlaceHolder.self
+        case .CPtr: return MRBValue.self
+        case .Object: return MRBValue.self
+        case .Class: return MRBValue.self
+        case .Module: return MRBValue.self
+        case .IClass: return MRBValue.self
+        case .SClass: return MRBValue.self
+        case .Proc: return MRBProc.self
+        case .Array: return MRBValue.self
+        case .Hash: return MRBValue.self
         case .String: return Swift.String.self
-        case .Range: return MRBPlaceHolder.self
-        case .Exception: return MRBPlaceHolder.self
-        case .File: return MRBPlaceHolder.self
-        case .Env: return MRBPlaceHolder.self
-        case .Data: return MRBPlaceHolder.self
-        case .Fiber: return MRBPlaceHolder.self
-        case .Unknown: return MRBPlaceHolder.self
+        case .Range: return MRBValue.self
+        case .Exception: return MRBValue.self
+        case .File: return MRBValue.self
+        case .Env: return MRBValue.self
+        case .Data: return MRBValue.self
+        case .Fiber: return MRBValue.self
+        case .Unknown: return MRBValue.self
         }
     }
 }

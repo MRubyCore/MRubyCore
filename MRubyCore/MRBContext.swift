@@ -19,6 +19,10 @@ public class MRBContext {
     internal let state: UnsafeMutablePointer<mrb_state>
     internal let context: UnsafeMutablePointer<mrbc_context>
 
+    public private (set) lazy var topSelf: MRBValue = {
+        return MRBValue(value: mrb_top_self(self.state), context: self)
+    }()
+
     public init() throws {
         state = mrb_open()
         if state.isNull {

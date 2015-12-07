@@ -27,7 +27,17 @@ public struct MRBValue: CustomDebugStringConvertible {
     }
 
     public var debugDescription: String {
+        if let value = value as? MRBValue {
+            return "{MRBValue <\(valueType)> \(value.inspection) }"
+        }
+
         return "{MRBValue <\(valueType)> \(value) }"
+    }
+}
+
+extension MRBValue: MRBValueConvertible {
+    public init!(value: MRBValue) {
+        self = value
     }
 }
 
@@ -45,5 +55,9 @@ extension MRBValue {
         }
 
         return result
+    }
+
+    public var inspection: String {
+        return self.callMethod("inspect", withParameters: [])
     }
 }

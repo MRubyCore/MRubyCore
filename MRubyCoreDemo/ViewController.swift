@@ -16,6 +16,8 @@ class ViewController: UIViewController {
 
         guard let context = try? MRBContext() else { return }
 
+        print(context.topSelf)
+
         do {
             print(try context.evaluateScript("1 + y"))
         }
@@ -43,6 +45,11 @@ class ViewController: UIViewController {
         }
         catch {
             print(error)
+        }
+
+        if let proc = try? context.evaluateScript("Proc.new { |n| n * n * n }") {
+            let x:mrb_int = proc.callMethod("call", withParameters: [try! context.evaluateScript("3")])
+            print(x)
         }
     }
 

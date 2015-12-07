@@ -8,8 +8,12 @@
 
 import Foundation
 
-public struct MRBNil: MRBValueConvertible {
+public struct MRBNil: MRBValueConvertible, CustomDebugStringConvertible {
     public init!(value: MRBValue) {
         guard value.valueType == .Nil else { return nil }
+    }
+
+    public var debugDescription: String {
+        return "nil"
     }
 }

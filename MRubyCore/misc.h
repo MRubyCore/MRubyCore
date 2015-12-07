@@ -29,4 +29,8 @@ static mrb_float MRBReadFloat(mrb_value value) {
     return mrb_float(value);
 }
 
+static struct RProc * MRBReadProc(mrb_value value) {
+    return mrb_proc_ptr(value);
+}
+
 #endif /* misc_h */

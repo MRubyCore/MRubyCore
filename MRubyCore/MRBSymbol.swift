@@ -8,33 +8,33 @@
 
 import Foundation
 
-public struct MRBSymbol: MRBValueConvertible, StringLiteralConvertible, CustomStringConvertible {
-    internal let text: String
+public struct MRBSymbol: MRBValueConvertible, StringLiteralConvertible, CustomDebugStringConvertible {
+    internal let symbol: String
 
-    internal init(text: String) {
-        self.text = text
+    internal init(symbol: String) {
+        self.symbol = symbol
     }
 
     public init(stringLiteral value: String) {
-        self.text = value
+        self.symbol = value
     }
 
     public init(extendedGraphemeClusterLiteral value: String) {
-        self.text = value
+        self.symbol = value
     }
 
     public init(unicodeScalarLiteral value: String) {
-        self.text = value
+        self.symbol = value
     }
 
     public init!(value: MRBValue) {
         guard value.valueType == .Symbol else { return nil }
 
         let cstr = MRBReadSymbol(value.context.state, value.rawValue)
-        self.init(text: String(CString: cstr, encoding: NSUTF8StringEncoding)!)
+        self.init(symbol: String(CString: cstr, encoding: NSUTF8StringEncoding)!)
     }
 
-    public var description: String {
-        return ":\(text)"
+    public var debugDescription: String {
+        return ":\(symbol)"
     }
 }
