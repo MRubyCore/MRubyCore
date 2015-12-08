@@ -9,11 +9,15 @@
 import Foundation
 import MRuby
 
-public class MRBContext {
+public final class MRBContext {
     public enum Error: ErrorType {
-        case InternalError(message: String)
         case ParseError(message: String)
         case RuntimeException(message: String)
+    }
+
+    private static let currentContextIdentifier = "MRBContext_" + NSUUID().UUIDString
+    internal static func currentContext() -> MRBContext? {
+        return NSThread.currentThread().threadDictionary.objectForKey(MRBContext.currentContextIdentifier) as? MRBContext
     }
 
     internal let state: UnsafeMutablePointer<mrb_state>
@@ -23,17 +27,17 @@ public class MRBContext {
         return MRBValue(value: mrb_top_self(self.state), context: self)
     }()
 
-    public init() throws {
+    public init() {
         state = mrb_open()
         if state.isNull {
             context = UnsafeMutablePointer<mrbc_context>.null
-            throw Error.InternalError(message: "mrb_open() failed")
+            fatalError("mrb_open() failed")
         }
 
         context = mrbc_context_new(state)
         if context.isNull {
             mrb_close(state)
-            throw Error.InternalError(message: "mrbc_context_new() failed")
+            fatalError("mrbc_context_new() failed")
         }
 
         context.memory.capture_errors = 1
@@ -41,6 +45,8 @@ public class MRBContext {
 
         var filename = "(MRBContext) ".cStringUsingEncoding(NSUTF8StringEncoding)!
         mrbc_filename(state, context, &filename)
+
+        NSThread.currentThread().threadDictionary.setObject(self, forKey: MRBContext.currentContextIdentifier)
     }
 
     deinit {
@@ -48,7 +54,7 @@ public class MRBContext {
         mrb_close(state)
     }
 
-    public func evaluateScript(script: String) throws -> MRBValue {
+    public func evaluateScript(script: String, topSelf: MRBValue? = nil) throws -> MRBValue {
         let gc = mrb_gc_arena_save(state)
         defer {
             mrb_gc_arena_restore(state, gc)
@@ -64,16 +70,19 @@ public class MRBContext {
             throw Error.ParseError(message: "failed to generate code")
         }
 
-        let value = mrb_run(state, proc, mrb_top_self(state))
+        let value = mrb_run(state, proc, (topSelf ?? self.topSelf).rawValue)
 
-        // check for uncaught exception
-        if !state.memory.exc.isNull {
-            let message: String = MRBValue(value: mrb_obj_value(state.memory.exc), context: self).callMethod("inspect", withParameters: [])
+        try checkForRuntimeException()
+
+        return MRBValue(value: value, context: self)
+    }
+
+    internal func checkForRuntimeException() throws {
+        guard state.memory.exc.isNull else {
+            let message: String = MRBValue(value: mrb_obj_value(state.memory.exc), context: self).inspection
             state.memory.exc.setNull()
             throw Error.RuntimeException(message: message)
         }
-
-        return MRBValue(value: value, context: self)
     }
 
     private func getParser(script: String) throws -> UnsafeMutablePointer<mrb_parser_state> {

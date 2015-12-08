@@ -22,42 +22,84 @@ public struct MRBValue: CustomDebugStringConvertible {
         return MRBValueType(type: MRBGetType(rawValue), value: rawValue)
     }
 
-    public var value: MRBValueConvertible {
-        return valueType.bridgeType.init(value: self)
-    }
-
     public var debugDescription: String {
-        if let value = value as? MRBValue {
-            return "{MRBValue <\(valueType)> \(value.inspection) }"
-        }
-
-        return "{MRBValue <\(valueType)> \(value) }"
-    }
-}
-
-extension MRBValue: MRBValueConvertible {
-    public init!(value: MRBValue) {
-        self = value
+        return "{MRBValue <\(valueType)> \(inspection) }"
     }
 }
 
 extension MRBValue {
-    public func callMethod<T: MRBValueConvertible>(name: String, withParameters parameters: [MRBValue]) -> T {
-        guard var s = name.cStringUsingEncoding(NSUTF8StringEncoding) else {
-            fatalError("invalid method name")
-        }
+    public func send(message: String, parameters: [MRBValue]) throws -> MRBValue {
+        let returnValue: mrb_value = send(message, parameters: parameters)
+        try context.checkForRuntimeException()
+        return MRBValue(value: returnValue, context: context)
+    }
 
+    private func send(message: String, parameters: [MRBValue]) -> mrb_value {
         var params = parameters.map { $0.rawValue }
-        let returnValue = mrb_funcall_argv(context.state, rawValue, mrb_intern_cstr(context.state, &s), mrb_int(parameters.count), &params)
-
-        guard let result = T(value: returnValue, context: context) else {
-            fatalError("unmatched result type")
-        }
-
-        return result
+        return mrb_funcall_argv(context.state, rawValue, message.toSym(inContext: context), mrb_int(parameters.count), &params)
     }
 
     public var inspection: String {
-        return self.callMethod("inspect", withParameters: [])
+        let inspection: mrb_value = self.send("inspect", parameters: [])
+        return String(CString: mrb_string_value_ptr(context.state, inspection), encoding: NSUTF8StringEncoding)!
+    }
+}
+
+extension MRBValue: IntegerLiteralConvertible {
+    public init(integerLiteral value: mrb_int) {
+        guard let context = MRBContext.currentContext() else {
+            fatalError("invalid context")
+        }
+
+        self.init(value: mrb_fixnum_value(value), context: context)
+    }
+}
+
+extension MRBValue: FloatLiteralConvertible {
+    public init(floatLiteral value: mrb_float) {
+        guard let context = MRBContext.currentContext() else {
+            fatalError("invalid context")
+        }
+
+        self.init(value: mrb_float_value(context.state, value), context: context)
+    }
+}
+
+extension MRBValue: NilLiteralConvertible {
+    public init(nilLiteral: ()) {
+        guard let context = MRBContext.currentContext() else {
+            fatalError("invalid context")
+        }
+
+        self.init(value: mrb_nil_value(), context: context)
+    }
+}
+
+extension MRBValue: StringLiteralConvertible, UnicodeScalarLiteralConvertible, ExtendedGraphemeClusterLiteralConvertible {
+    public init(stringLiteral value: String) {
+        guard let context = MRBContext.currentContext() else {
+            fatalError("invalid context")
+        }
+
+        let cstr = value.cStringUsingEncoding(NSUTF8StringEncoding)!
+        self.init(value: mrb_str_new_cstr(context.state, cstr), context: context)
+    }
+
+    public init(unicodeScalarLiteral value: String) {
+        self.init(stringLiteral: value)
+    }
+
+    public init(extendedGraphemeClusterLiteral value: String) {
+        self.init(stringLiteral: value)
+    }
+}
+
+extension MRBValue: BooleanLiteralConvertible {
+    public init(booleanLiteral value: Bool) {
+        guard let context = MRBContext.currentContext() else {
+            fatalError("invalid context")
+        }
+
+        self.init(value: mrb_bool_value(value ? 1 : 0), context: context)
     }
 }

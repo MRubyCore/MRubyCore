@@ -14,7 +14,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        guard let context = try? MRBContext() else { return }
+        let context = MRBContext()
 
         print(context.topSelf)
 
@@ -41,16 +41,28 @@ class ViewController: UIViewController {
             print(try context.evaluateScript("Kernel"))
             print(try context.evaluateScript("[1, 2.0, 'a']"))
             print(try context.evaluateScript("{a: 3, b: '7', :c => [36], 'd' => {}}"))
-            print(try context.evaluateScript("class"))
+            print(try context.evaluateScript("def f(name, extras); puts \"Hello, #{name}, and #{extras}.\"; name; end"))
+            print(try context.evaluateScript("f(1)"))
         }
         catch {
             print(error)
         }
 
-        if let proc = try? context.evaluateScript("Proc.new { |n| n * n * n }") {
-            let x:mrb_int = proc.callMethod("call", withParameters: [try! context.evaluateScript("3")])
+        do {
+            let proc = try context.evaluateScript("Proc.new { |n| n * n * n }")
+            let x = try proc.send("call", parameters: [3])
             print(x)
+
+            let y = try context.topSelf.send("f", parameters: ["中文", 1])
+            print(y)
         }
+        catch {
+            print(error)
+        }
+
+        let x = try! context.evaluateScript("1")
+        let y = try! x.send("to_s", parameters: [])
+        print(x, y)
     }
 
     override func didReceiveMemoryWarning() {

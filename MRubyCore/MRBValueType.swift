@@ -9,7 +9,7 @@
 import Foundation
 import MRuby
 
-public enum MRBValueType: String {
+public enum MRBValueType {
     case Nil
     case False
     case Free
@@ -68,36 +68,6 @@ public enum MRBValueType: String {
         case MRB_TT_DATA: self = .Data
         case MRB_TT_FIBER: self = .Fiber
         default: self = .Unknown
-        }
-    }
-
-    internal var bridgeType: MRBValueConvertible.Type {
-        switch self {
-        case .Nil: return MRBNil.self
-        case .False: return Bool.self
-        case .Free: return MRBValue.self
-        case .True: return Bool.self
-        case .FixNum: return mrb_int.self
-        case .Symbol: return MRBSymbol.self
-        case .Undef: return MRBValue.self
-        case .Float: return mrb_float.self
-        case .CPtr: return MRBValue.self
-        case .Object: return MRBValue.self
-        case .Class: return MRBValue.self
-        case .Module: return MRBValue.self
-        case .IClass: return MRBValue.self
-        case .SClass: return MRBValue.self
-        case .Proc: return MRBProc.self
-        case .Array: return MRBValue.self
-        case .Hash: return MRBValue.self
-        case .String: return Swift.String.self
-        case .Range: return MRBValue.self
-        case .Exception: return MRBValue.self
-        case .File: return MRBValue.self
-        case .Env: return MRBValue.self
-        case .Data: return MRBValue.self
-        case .Fiber: return MRBValue.self
-        case .Unknown: return MRBValue.self
         }
     }
 }
