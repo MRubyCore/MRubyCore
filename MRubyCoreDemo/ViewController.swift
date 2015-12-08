@@ -41,7 +41,7 @@ class ViewController: UIViewController {
             print(try context.evaluateScript("Kernel"))
             print(try context.evaluateScript("[1, 2.0, 'a']"))
             print(try context.evaluateScript("{a: 3, b: '7', :c => [36], 'd' => {}}"))
-            print(try context.evaluateScript("def f(name, extras); puts \"Hello, #{name}, and #{extras}.\"; name; end"))
+            print(try context.evaluateScript("def f(name, extras = \"goodbye\"); puts \"Hello, #{name}, and #{extras}.\"; return name, extras; end"))
             print(try context.evaluateScript("f(1)"))
         }
         catch {
@@ -53,7 +53,7 @@ class ViewController: UIViewController {
             let x = try proc.send("call", parameters: [3])
             print(x)
 
-            let y = try context.topSelf.send("f", parameters: ["中文", 1])
+            let y = try context.topSelf.send("f", parameters: [M_PI, "再见"])
             print(y)
         }
         catch {

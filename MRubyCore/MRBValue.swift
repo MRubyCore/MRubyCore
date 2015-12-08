@@ -28,8 +28,8 @@ public struct MRBValue: CustomDebugStringConvertible {
 }
 
 extension MRBValue {
-    public func send(message: String, parameters: [MRBValue]) throws -> MRBValue {
-        let returnValue: mrb_value = send(message, parameters: parameters)
+    public func send(message: String, parameters: [MRBValueConvertible]) throws -> MRBValue {
+        let returnValue: mrb_value = send(message, parameters: parameters.map { $0.mrbValue })
         try context.checkForRuntimeException()
         return MRBValue(value: returnValue, context: context)
     }
