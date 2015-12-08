@@ -63,6 +63,9 @@ class ViewController: UIViewController {
         let x = try! context.evaluateScript("1")
         let y = try! x.send("to_s", parameters: [])
         print(x, y)
+
+        dump(try! context.evaluateScript("[1, 2.0, 'a']").array)
+        dump(try! context.evaluateScript("{a: 3, b: '7', :c => [36], 'd' => {}}").dictionary)
     }
 
     override func didReceiveMemoryWarning() {

@@ -103,3 +103,45 @@ extension MRBValue: BooleanLiteralConvertible {
         self.init(value: mrb_bool_value(value ? 1 : 0), context: context)
     }
 }
+
+extension MRBValue: Hashable, Equatable {
+    public var hashValue: Int {
+        return Int(MRBReadFixnum(send("hash", parameters: [])))
+    }
+}
+
+public func == (lhs: MRBValue, rhs: MRBValue) -> Bool {
+    guard lhs.context == rhs.context else { return false }
+    return mrb_equal(lhs.context.state, lhs.rawValue, rhs.rawValue) != 0
+}
+
+extension MRBValue {
+    public var array: [MRBValue]? {
+        guard valueType == .Array else { return nil }
+
+        let length = mrb_ary_len(context.state, rawValue)
+        return (0 ..< length).map {
+            mrb_ary_entry(rawValue, $0)
+        }.map {
+            MRBValue(value: $0, context: context)
+        }
+    }
+
+    public var dictionary: [MRBValue: MRBValue]? {
+        guard valueType == .Hash else { return nil }
+
+        guard let keys = MRBValue(value: mrb_hash_keys(context.state, rawValue), context: context).array else {
+            return nil
+        }
+
+        return keys.map {
+            ($0, mrb_hash_get(context.state, rawValue, $0.rawValue))
+        }.map {
+            (key: $0, value: MRBValue(value: $1, context: context))
+        }.reduce([:], combine: { m, v in
+            var m = m!
+            m[v.key] = v.value
+            return m
+        })
+    }
+}

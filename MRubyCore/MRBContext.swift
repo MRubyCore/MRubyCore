@@ -142,6 +142,11 @@ public final class MRBContext {
     }
 }
 
+extension MRBContext: Equatable {}
+public func == (lhs: MRBContext, rhs: MRBContext) -> Bool {
+    return lhs.state == rhs.state && lhs.context == rhs.context
+}
+
 private extension UnsafeMutablePointer {
     static var null: UnsafeMutablePointer {
         return self.init()
