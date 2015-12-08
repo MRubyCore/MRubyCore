@@ -158,16 +158,16 @@ extension MRBValue {
         }
     }
 
-    public var floatValue: Double? {
+    public var floatValue: mrb_float? {
         guard valueType == .Float else { return nil }
 
         return MRBReadFloat(rawValue)
     }
 
-    public var integerValue: Int? {
+    public var integerValue: mrb_int? {
         guard valueType == .FixNum else { return nil }
 
-        return Int(MRBReadFixnum(rawValue))
+        return MRBReadFixnum(rawValue)
     }
 
     public var boolValue: Bool? {

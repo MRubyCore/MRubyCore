@@ -1,3 +1,4 @@
+#define MRB_INT64
 #include "mruby.h"
 #include "mruby/array.h"
 #include "mruby/class.h"

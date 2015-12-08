@@ -19,12 +19,6 @@ extension mrb_int: MRBValueConvertible {
     }
 }
 
-extension Int: MRBValueConvertible {
-    public var mrbValue: MRBValue {
-        return MRBValue(integerLiteral: mrb_int(self))
-    }
-}
-
 extension mrb_float: MRBValueConvertible {
     public var mrbValue: MRBValue {
         return MRBValue(floatLiteral: self)
