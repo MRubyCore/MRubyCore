@@ -116,7 +116,7 @@ public func == (lhs: MRBValue, rhs: MRBValue) -> Bool {
 }
 
 extension MRBValue {
-    public var array: [MRBValue]? {
+    public var arrayValue: [MRBValue]? {
         guard valueType == .Array else { return nil }
 
         let length = mrb_ary_len(context.state, rawValue)
@@ -127,10 +127,10 @@ extension MRBValue {
         }
     }
 
-    public var dictionary: [MRBValue: MRBValue]? {
+    public var dictionaryValue: [MRBValue: MRBValue]? {
         guard valueType == .Hash else { return nil }
 
-        guard let keys = MRBValue(value: mrb_hash_keys(context.state, rawValue), context: context).array else {
+        guard let keys = MRBValue(value: mrb_hash_keys(context.state, rawValue), context: context).arrayValue else {
             return nil
         }
 
@@ -143,5 +143,41 @@ extension MRBValue {
             m[v.key] = v.value
             return m
         })
+    }
+
+    public var stringValue: String? {
+        switch valueType {
+        case .String:
+            let cstr = mrb_string_value_ptr(context.state, rawValue)
+            return String(CString: cstr, encoding: NSUTF8StringEncoding)!
+        case .Symbol:
+            let cstr = MRBReadSymbol(context.state, rawValue)
+            return String(CString: cstr, encoding: NSUTF8StringEncoding)!
+        default:
+            return nil
+        }
+    }
+
+    public var floatValue: Double? {
+        guard valueType == .Float else { return nil }
+
+        return MRBReadFloat(rawValue)
+    }
+
+    public var integerValue: Int? {
+        guard valueType == .FixNum else { return nil }
+
+        return Int(MRBReadFixnum(rawValue))
+    }
+
+    public var boolValue: Bool? {
+        switch valueType {
+        case .True:
+            return true
+        case .False:
+            return false
+        default:
+            return nil
+        }
     }
 }
