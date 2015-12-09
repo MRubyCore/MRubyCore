@@ -24,6 +24,7 @@
 		8C2268EE1C1812C10082600C /* MRBRangeElementValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2268ED1C1812C10082600C /* MRBRangeElementValue.swift */; };
 		8C2268F01C1813410082600C /* literals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2268EF1C1813410082600C /* literals.swift */; };
 		8C2268F21C1813770082600C /* convertibles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2268F11C1813770082600C /* convertibles.swift */; };
+		8C2268F41C181D930082600C /* operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2268F31C181D930082600C /* operators.swift */; };
 		8C390C401C1678D500DCE35F /* misc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C390C3F1C1678D500DCE35F /* misc.swift */; };
 		8C390C421C16B4DD00DCE35F /* MRBValueConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C390C411C16B4DD00DCE35F /* MRBValueConvertible.swift */; };
 		8C86E6FC1C14283000A58FCA /* MRuby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C86E6FB1C14283000A58FCA /* MRuby.framework */; };
@@ -73,6 +74,7 @@
 		8C2268ED1C1812C10082600C /* MRBRangeElementValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRBRangeElementValue.swift; sourceTree = "<group>"; };
 		8C2268EF1C1813410082600C /* literals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = literals.swift; sourceTree = "<group>"; };
 		8C2268F11C1813770082600C /* convertibles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = convertibles.swift; sourceTree = "<group>"; };
+		8C2268F31C181D930082600C /* operators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = operators.swift; sourceTree = "<group>"; };
 		8C390C3F1C1678D500DCE35F /* misc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = misc.swift; sourceTree = "<group>"; };
 		8C390C411C16B4DD00DCE35F /* MRBValueConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRBValueConvertible.swift; sourceTree = "<group>"; };
 		8C86E6FB1C14283000A58FCA /* MRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MRuby.framework; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 				8C19BD711C113B5F00B5635D /* Info.plist */,
 				8C19BD8C1C11652500B5635D /* misc.h */,
 				8C390C3F1C1678D500DCE35F /* misc.swift */,
+				8C2268F31C181D930082600C /* operators.swift */,
 				8C2268EF1C1813410082600C /* literals.swift */,
 				8C2268F11C1813770082600C /* convertibles.swift */,
 				8C1CC5F11C180A89009189EE /* AnyMRBValue.swift */,
@@ -290,6 +293,7 @@
 				8C1CC5F01C1803A1009189EE /* MRBGeneralValue.swift in Sources */,
 				8C2268F21C1813770082600C /* convertibles.swift in Sources */,
 				8C390C421C16B4DD00DCE35F /* MRBValueConvertible.swift in Sources */,
+				8C2268F41C181D930082600C /* operators.swift in Sources */,
 				8C1CC5F21C180A89009189EE /* AnyMRBValue.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

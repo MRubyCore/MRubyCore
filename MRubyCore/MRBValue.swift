@@ -9,9 +9,17 @@
 import Foundation
 import MRuby
 
-public protocol MRBValue: CustomDebugStringConvertible {
+public protocol MRBValue: CustomDebugStringConvertible, MRBValueConvertible {
     var rawValue: mrb_value { get }
     unowned var context: MRBContext { get }
+}
+
+// MARK - convertible conformance
+
+public extension MRBValue {
+    public var mrbValue: MRBValue {
+        return self
+    }
 }
 
 // MARK - default property & methods

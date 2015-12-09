@@ -67,3 +67,9 @@ extension MRBGeneralValue: BooleanLiteralConvertible {
         self.init(value: mrb_bool_value(value ? 1 : 0), context: context)
     }
 }
+
+extension AnyMRBValue: ArrayLiteralConvertible {
+    public init(arrayLiteral elements: MRBValueConvertible...) {
+        self = AnyMRBValue(elements.mrbValue)
+    }
+}

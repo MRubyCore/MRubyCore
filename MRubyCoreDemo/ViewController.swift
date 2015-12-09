@@ -72,6 +72,10 @@ class ViewController: UIViewController {
 
         print(try! context.evaluateScript("1 .. 10").rangeValue)
         print(try! context.evaluateScript("'a' ... 'z'").rangeValue)
+        print(((1 as MRBRangeElementValue)...(10 as MRBRangeElementValue)).mrbValue)
+        print((1...10).mrbValue)
+        print(Array(1...10).mrbValue)
+        print([1, 2, 3].mrbValue)
     }
 
     override func didReceiveMemoryWarning() {
