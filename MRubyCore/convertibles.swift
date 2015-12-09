@@ -51,8 +51,6 @@ extension Range: MRBValueConvertible {
             fatalError("\(Element.self) cannot be converted to MRBRangeElementValue")
         }
 
-        assert(start.context == end.context)
-
         let context = start.context
         let range = mrb_range_new(context.state, start.rawValue, end.rawValue, 1)
 
@@ -85,5 +83,21 @@ extension Array: MRBValueConvertible {
         }
 
         return array ⨝ context
+    }
+}
+
+extension Dictionary: MRBValueConvertible {
+    public var mrbValue: MRBValue {
+        guard Key.self is MRBValueConvertible.Type else {
+            fatalError("unsupported key type \(Key.self)")
+        }
+
+        guard Value.self is MRBValueConvertible.Type else {
+            fatalError("unsupported value type \(Value.self)")
+        }
+
+        return ↢map {
+            ($0 as! MRBValueConvertible, $1 as! MRBValueConvertible)
+        }
     }
 }

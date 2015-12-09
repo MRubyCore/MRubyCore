@@ -73,3 +73,9 @@ extension AnyMRBValue: ArrayLiteralConvertible {
         self = AnyMRBValue(elements.mrbValue)
     }
 }
+
+extension AnyMRBValue: DictionaryLiteralConvertible {
+    public init(dictionaryLiteral elements: (MRBValueConvertible, MRBValueConvertible)...) {
+        self = AnyMRBValue(↢elements)
+    }
+}

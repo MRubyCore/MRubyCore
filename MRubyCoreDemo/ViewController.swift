@@ -54,7 +54,7 @@ class ViewController: UIViewController {
             print(x)
 
             let s = "再见"
-            let y = try context.topSelf.send("f", parameters: [M_PI, s])
+            let y = try context.topSelf.send("f", parameters: [[M_PI], ["name": s]])
             print(y)
         }
         catch {
@@ -76,6 +76,7 @@ class ViewController: UIViewController {
         print((1...10).mrbValue)
         print(Array(1...10).mrbValue)
         print([1, 2, 3].mrbValue)
+        print([1: 2].mrbValue)
     }
 
     override func didReceiveMemoryWarning() {
