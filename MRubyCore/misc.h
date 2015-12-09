@@ -33,4 +33,8 @@ static struct RProc * MRBReadProc(mrb_value value) {
     return mrb_proc_ptr(value);
 }
 
+static struct RRange * MRBReadRange(mrb_value value) {
+    return mrb_range_ptr(value);
+}
+
 #endif /* misc_h */

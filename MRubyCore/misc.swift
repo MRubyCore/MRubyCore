@@ -15,3 +15,15 @@ extension String {
         return mrb_intern_cstr(context.state, &s)
     }
 }
+
+infix operator ⨝ { associativity left precedence 255 }
+
+/// Create a MRBValue
+/// from given mrb_value and MRBContext
+func ⨝ (lhs: mrb_value, rhs: MRBContext) -> MRBValue {
+    if MRBRangeElementValue.eligible(lhs, context: rhs) {
+        return MRBRangeElementValue(value: lhs, context: rhs)
+    }
+
+    return MRBGeneralValue(value: lhs, context: rhs)
+}

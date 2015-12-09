@@ -12,27 +12,3 @@ import MRuby
 public protocol MRBValueConvertible {
     var mrbValue: MRBValue { get }
 }
-
-extension mrb_int: MRBValueConvertible {
-    public var mrbValue: MRBValue {
-        return MRBValue(integerLiteral: self)
-    }
-}
-
-extension mrb_float: MRBValueConvertible {
-    public var mrbValue: MRBValue {
-        return MRBValue(floatLiteral: self)
-    }
-}
-
-extension String: MRBValueConvertible {
-    public var mrbValue: MRBValue {
-        return MRBValue(stringLiteral: self)
-    }
-}
-
-extension Bool: MRBValueConvertible {
-    public var mrbValue: MRBValue {
-        return MRBValue(booleanLiteral: self)
-    }
-}

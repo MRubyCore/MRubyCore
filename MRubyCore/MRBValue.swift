@@ -9,15 +9,14 @@
 import Foundation
 import MRuby
 
-public struct MRBValue: CustomDebugStringConvertible {
-    internal let rawValue: mrb_value
-    internal unowned let context: MRBContext
+public protocol MRBValue: CustomDebugStringConvertible {
+    var rawValue: mrb_value { get }
+    unowned var context: MRBContext { get }
+}
 
-    internal init(value: mrb_value, context: MRBContext) {
-        self.rawValue = value
-        self.context = context
-    }
+// MARK - default property & methods
 
+public extension MRBValue {
     public var valueType: MRBValueType {
         return MRBValueType(type: MRBGetType(rawValue), value: rawValue)
     }
@@ -25,13 +24,10 @@ public struct MRBValue: CustomDebugStringConvertible {
     public var debugDescription: String {
         return "{MRBValue <\(valueType)> \(inspection) }"
     }
-}
 
-extension MRBValue {
-    public func send(message: String, parameters: [MRBValueConvertible]) throws -> MRBValue {
-        let returnValue: mrb_value = send(message, parameters: parameters.map { $0.mrbValue })
-        try context.checkForRuntimeException()
-        return MRBValue(value: returnValue, context: context)
+    public var inspection: String {
+        let inspection: mrb_value = self.send("inspect", parameters: [])
+        return String(CString: mrb_string_value_ptr(context.state, inspection), encoding: NSUTF8StringEncoding)!
     }
 
     private func send(message: String, parameters: [MRBValue]) -> mrb_value {
@@ -39,110 +35,70 @@ extension MRBValue {
         return mrb_funcall_argv(context.state, rawValue, message.toSym(inContext: context), mrb_int(parameters.count), &params)
     }
 
-    public var inspection: String {
-        let inspection: mrb_value = self.send("inspect", parameters: [])
-        return String(CString: mrb_string_value_ptr(context.state, inspection), encoding: NSUTF8StringEncoding)!
+    public func send(message: String, parameters: [MRBValueConvertible]) throws -> MRBValue {
+        let returnValue: mrb_value = send(message, parameters: parameters.map { $0.mrbValue })
+        try context.checkForRuntimeException()
+        return returnValue ⨝ context
     }
 }
 
-extension MRBValue: IntegerLiteralConvertible {
-    public init(integerLiteral value: mrb_int) {
-        guard let context = MRBContext.currentContext() else {
-            fatalError("invalid context")
-        }
+// MARK - Hashable & Equatable conformance, see AnyMRBValue for more impormation
 
-        self.init(value: mrb_fixnum_value(value), context: context)
-    }
-}
-
-extension MRBValue: FloatLiteralConvertible {
-    public init(floatLiteral value: mrb_float) {
-        guard let context = MRBContext.currentContext() else {
-            fatalError("invalid context")
-        }
-
-        self.init(value: mrb_float_value(context.state, value), context: context)
-    }
-}
-
-extension MRBValue: NilLiteralConvertible {
-    public init(nilLiteral: ()) {
-        guard let context = MRBContext.currentContext() else {
-            fatalError("invalid context")
-        }
-
-        self.init(value: mrb_nil_value(), context: context)
-    }
-}
-
-extension MRBValue: StringLiteralConvertible, UnicodeScalarLiteralConvertible, ExtendedGraphemeClusterLiteralConvertible {
-    public init(stringLiteral value: String) {
-        guard let context = MRBContext.currentContext() else {
-            fatalError("invalid context")
-        }
-
-        let cstr = value.cStringUsingEncoding(NSUTF8StringEncoding)!
-        self.init(value: mrb_str_new_cstr(context.state, cstr), context: context)
-    }
-
-    public init(unicodeScalarLiteral value: String) {
-        self.init(stringLiteral: value)
-    }
-
-    public init(extendedGraphemeClusterLiteral value: String) {
-        self.init(stringLiteral: value)
-    }
-}
-
-extension MRBValue: BooleanLiteralConvertible {
-    public init(booleanLiteral value: Bool) {
-        guard let context = MRBContext.currentContext() else {
-            fatalError("invalid context")
-        }
-
-        self.init(value: mrb_bool_value(value ? 1 : 0), context: context)
-    }
-}
-
-extension MRBValue: Hashable, Equatable {
+public extension MRBValue {
     public var hashValue: Int {
         return Int(MRBReadFixnum(send("hash", parameters: [])))
     }
 }
 
-public func == (lhs: MRBValue, rhs: MRBValue) -> Bool {
+public func == <T: MRBValue>(lhs: T, rhs: T) -> Bool {
     guard lhs.context == rhs.context else { return false }
     return mrb_equal(lhs.context.state, lhs.rawValue, rhs.rawValue) != 0
 }
 
-extension MRBValue {
+// MARK - values
+
+public extension MRBValue {
     public var arrayValue: [MRBValue]? {
-        guard valueType == .Array else { return nil }
+        guard valueType == MRBValueType.Array else { return nil }
 
         let length = mrb_ary_len(context.state, rawValue)
         return (0 ..< length).map {
             mrb_ary_entry(rawValue, $0)
         }.map {
-            MRBValue(value: $0, context: context)
+            $0 ⨝ context
         }
     }
 
-    public var dictionaryValue: [MRBValue: MRBValue]? {
-        guard valueType == .Hash else { return nil }
+    public var dictionaryValue: [AnyMRBValue: MRBValue]? {
+        guard valueType == MRBValueType.Hash else { return nil }
 
-        guard let keys = MRBValue(value: mrb_hash_keys(context.state, rawValue), context: context).arrayValue else {
+        guard let keys = (mrb_hash_keys(context.state, rawValue) ⨝ context).arrayValue else {
             return nil
         }
 
         return keys.map {
             ($0, mrb_hash_get(context.state, rawValue, $0.rawValue))
         }.map {
-            (key: $0, value: MRBValue(value: $1, context: context))
+            (key: AnyMRBValue($0), value: $1 ⨝ context)
         }.reduce([:], combine: { m, v in
             var m = m!
             m[v.key] = v.value
             return m
         })
+    }
+
+    public var rangeValue: Range<MRBRangeElementValue>? {
+        guard valueType == MRBValueType.Range else { return nil }
+
+        let range = MRBReadRange(rawValue)
+        let excl = range.memory.excl != 0
+
+        guard let start = range.memory.edges.memory.beg ⨝ context as? MRBRangeElementValue,
+                    end = range.memory.edges.memory.end ⨝ context as? MRBRangeElementValue else {
+                return nil
+        }
+
+        return Range(start: start, end: excl ? end : end.successor())
     }
 
     public var stringValue: String? {

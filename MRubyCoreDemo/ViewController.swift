@@ -53,7 +53,8 @@ class ViewController: UIViewController {
             let x = try proc.send("call", parameters: [3])
             print(x)
 
-            let y = try context.topSelf.send("f", parameters: [M_PI, "再见"])
+            let s = "再见"
+            let y = try context.topSelf.send("f", parameters: [M_PI, s])
             print(y)
         }
         catch {
@@ -64,8 +65,13 @@ class ViewController: UIViewController {
         let y = try! x.send("to_s", parameters: [])
         print(x, y)
 
-        dump(try! context.evaluateScript("[1, 2.0, 'a']").arrayValue)
-        dump(try! context.evaluateScript("{a: 3, b: '7', :c => [36], 'd' => {}}").dictionaryValue)
+        print(try! context.evaluateScript("[1, 2.0, 'a']").arrayValue)
+        print(try! context.evaluateScript("{a: 3, b: '7', :c => [36], 'd' => {}}").dictionaryValue)
+
+        print(("a" as MRBRangeElementValue).successor())
+
+        print(try! context.evaluateScript("1 .. 10").rangeValue)
+        print(try! context.evaluateScript("'a' ... 'z'").rangeValue)
     }
 
     override func didReceiveMemoryWarning() {

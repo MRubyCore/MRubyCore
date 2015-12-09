@@ -36,7 +36,7 @@ public enum MRBValueType {
     case Fiber
     case Unknown
 
-    internal init(type: mrb_vtype, value: mrb_value) {
+    init(type: mrb_vtype, value: mrb_value) {
         switch type {
         case MRB_TT_FALSE:
             if MRBReadFixnum(value) != 0 {

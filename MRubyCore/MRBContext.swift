@@ -16,15 +16,15 @@ public final class MRBContext {
     }
 
     private static let currentContextIdentifier = "MRBContext_" + NSUUID().UUIDString
-    internal static func currentContext() -> MRBContext? {
+    static func currentContext() -> MRBContext? {
         return NSThread.currentThread().threadDictionary.objectForKey(MRBContext.currentContextIdentifier) as? MRBContext
     }
 
-    internal let state: UnsafeMutablePointer<mrb_state>
-    internal let context: UnsafeMutablePointer<mrbc_context>
+    let state: UnsafeMutablePointer<mrb_state>
+    let context: UnsafeMutablePointer<mrbc_context>
 
     public private (set) lazy var topSelf: MRBValue = {
-        return MRBValue(value: mrb_top_self(self.state), context: self)
+        return mrb_top_self(self.state) ⨝ self
     }()
 
     public init() {
@@ -74,12 +74,12 @@ public final class MRBContext {
 
         try checkForRuntimeException()
 
-        return MRBValue(value: value, context: self)
+        return value ⨝ self
     }
 
-    internal func checkForRuntimeException() throws {
+    func checkForRuntimeException() throws {
         guard state.memory.exc.isNull else {
-            let message: String = MRBValue(value: mrb_obj_value(state.memory.exc), context: self).inspection
+            let message: String = (mrb_obj_value(state.memory.exc) ⨝ self).inspection
             state.memory.exc.setNull()
             throw Error.RuntimeException(message: message)
         }
@@ -146,6 +146,8 @@ extension MRBContext: Equatable {}
 public func == (lhs: MRBContext, rhs: MRBContext) -> Bool {
     return lhs.state == rhs.state && lhs.context == rhs.context
 }
+
+// MARK - NULL-check extensions for UnsafeMutablePointer
 
 private extension UnsafeMutablePointer {
     static var null: UnsafeMutablePointer {
