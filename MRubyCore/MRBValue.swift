@@ -30,7 +30,7 @@ public extension MRBValue {
     }
 
     public var debugDescription: String {
-        return "{MRBValue <\(valueType)> \(inspection) }"
+        return "{\(self.dynamicType) <\(valueType)> \(inspection) }"
     }
 
     public var inspection: String {

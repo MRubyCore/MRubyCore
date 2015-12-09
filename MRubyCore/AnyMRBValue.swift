@@ -28,4 +28,8 @@ public struct AnyMRBValue: MRBValue, Hashable {
     public unowned var context: MRBContext {
         return __value.context
     }
+
+    public var mrbValue: MRBValue {
+        return __value
+    }
 }
