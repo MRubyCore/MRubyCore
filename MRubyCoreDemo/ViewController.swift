@@ -77,6 +77,16 @@ class ViewController: UIViewController {
         print(Array(1...10).mrbValue)
         print([1, 2, 3].mrbValue)
         print([1: 2].mrbValue)
+
+        do {
+            print(try context.evaluateScript("a = 1; b = [1, 2, 3]; c = \"6\""))
+            print(try context.evaluateScript("a"))
+            print(try context.evaluateScript("b"))
+            print(try context.evaluateScript("c"))
+        }
+        catch {
+            print(error)
+        }
     }
 
     override func didReceiveMemoryWarning() {

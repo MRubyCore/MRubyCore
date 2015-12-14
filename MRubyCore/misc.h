@@ -37,4 +37,8 @@ static struct RRange * MRBReadRange(mrb_value value) {
     return mrb_range_ptr(value);
 }
 
+static uint32_t MRBGetNLocals(struct RProc *proc) {
+    return proc->body.irep->nlocals;
+}
+
 #endif /* misc_h */

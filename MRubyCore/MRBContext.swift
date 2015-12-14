@@ -22,6 +22,8 @@ public final class MRBContext {
 
     let state: UnsafeMutablePointer<mrb_state>
     let context: UnsafeMutablePointer<mrbc_context>
+    let gcArena: Int32
+    private var stackKeep: UInt32 = 0
 
     public private (set) lazy var topSelf: MRBValue = {
         return mrb_top_self(self.state) ⨝ self
@@ -46,6 +48,8 @@ public final class MRBContext {
         var filename = "(MRBContext) ".cStringUsingEncoding(NSUTF8StringEncoding)!
         mrbc_filename(state, context, &filename)
 
+        gcArena = mrb_gc_arena_save(state)
+
         NSThread.currentThread().threadDictionary.setObject(self, forKey: MRBContext.currentContextIdentifier)
     }
 
@@ -55,13 +59,9 @@ public final class MRBContext {
     }
 
     public func evaluateScript(script: String, topSelf: MRBValue? = nil) throws -> MRBValue {
-        let gc = mrb_gc_arena_save(state)
-        defer {
-            mrb_gc_arena_restore(state, gc)
-        }
-
         let parser = try getParser(script)
         defer {
+            context.memory.lineno += 1
             mrb_parser_free(parser)
         }
 
@@ -70,9 +70,12 @@ public final class MRBContext {
             throw Error.ParseError(message: "failed to generate code")
         }
 
-        let value = mrb_run(state, proc, (topSelf ?? self.topSelf).rawValue)
+        let value = mrb_context_run(state, proc, (topSelf ?? self.topSelf).rawValue, stackKeep)
+        stackKeep = MRBGetNLocals(proc)
 
         try checkForRuntimeException()
+
+        mrb_gc_arena_restore(state, gcArena)
 
         return value ⨝ self
     }
