@@ -21,7 +21,7 @@ public enum MRBPartialValue {
 }
 
 extension MRBPartialValue: MRBValueConvertible {
-    public func apply(context context: MRBContext) -> MRBValue {
+    public func inContext(context: MRBContext) -> MRBValue {
         switch self {
         case .Integer(let v):
             return mrb_fixnum_value(v) ⨝ context
@@ -36,7 +36,7 @@ extension MRBPartialValue: MRBValueConvertible {
             return mrb_bool_value(v ? 1 : 0) ⨝ context
         case .Array(let v):
             let values = v.map {
-                $0.apply(context: context)
+                $0.inContext(context)
             }
 
             if values.isEmpty {
@@ -47,7 +47,7 @@ extension MRBPartialValue: MRBValueConvertible {
             return mrb_ary_new_from_values(context.state, mrb_int(values.count), &rawValues) ⨝ context
         case .Dictionary(let v):
             let kv = v.map {
-                (key: $0.apply(context: context), value: $1.apply(context: context))
+                (key: $0.inContext(context), value: $1.inContext(context))
             }
 
             let dict = mrb_hash_new_capa(context.state, Int32(kv.count))
@@ -58,7 +58,7 @@ extension MRBPartialValue: MRBValueConvertible {
 
             return dict ⨝ context
         case .Range(let start, let end):
-            let range = mrb_range_new(context.state, start.apply(context: context).rawValue, end.apply(context: context).rawValue, 1)
+            let range = mrb_range_new(context.state, start.inContext(context).rawValue, end.inContext(context).rawValue, 1)
             return range ⨝ context
         }
     }

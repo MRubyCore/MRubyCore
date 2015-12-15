@@ -47,7 +47,7 @@ public extension MRBValue {
     }
 
     public func send(message: String, parameters: [MRBValueConvertible]) throws -> MRBValue {
-        let returnValue: mrb_value = send(message, parameters: parameters.map { $0.apply(context: context) })
+        let returnValue: mrb_value = send(message, parameters: parameters.map { $0.inContext(context) })
         try context.checkForRuntimeException()
         return returnValue ⨝ context
     }
@@ -63,7 +63,7 @@ public extension MRBValue {
 
 // MARK: MRBValueConvertible conformance
 public extension MRBValue {
-    public func apply(context context: MRBContext) -> MRBValue {
+    public func inContext(context: MRBContext) -> MRBValue {
         assert(self.context == context)
         return self
     }

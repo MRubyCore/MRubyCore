@@ -68,14 +68,14 @@ class ViewController: UIViewController {
         print(try! context.evaluateScript("[1, 2.0, 'a']").arrayValue)
         print(try! context.evaluateScript("{a: 3, b: '7', :c => [36], 'd' => {}}").dictionaryValue)
 
-        print(("a".apply(context: context) as! MRBRangeElementValue).successor())
+        print(("a".inContext(context) as! MRBRangeElementValue).successor())
 
         print(try! context.evaluateScript("1 .. 10").rangeValue)
         print(try! context.evaluateScript("'a' ... 'z'").rangeValue)
-        print((1...10).apply(context: context))
-        print(Array(1...10).apply(context: context))
-        print([1, 2, 3].apply(context: context))
-        print([1: 2].apply(context: context))
+        print((1...10).inContext(context))
+        print(Array(1...10).inContext(context))
+        print([1, 2, 3].inContext(context))
+        print([1: 2].inContext(context))
 
         do {
             print(try context.evaluateScript("a = 1; b = [1, 2, 3]; c = \"6\""))
@@ -95,11 +95,11 @@ class ViewController: UIViewController {
 
             print(classA.constants["AAA"])
 
-            let one = "1".apply(context: context)
+            let one = "1".inContext(context)
 
             print(try one.evaluateScript("xxxx = 9"))
             print(one.localVariables["xxxx"])
-            print("1".apply(context: context).localVariables["xxxx"])
+            print("1".inContext(context).localVariables["xxxx"])
         }
         catch {
             print(error)

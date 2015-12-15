@@ -23,17 +23,16 @@ public struct AnyMRBValue: Hashable, MRBValueConvertible {
         case let v as AnyMRBValue: __value = v.__value
         case let v as MRBPartialConvertible: __value = .Partial(v.partialValue)
         default:
-            print(value, value.dynamicType)
             fatalError("value is neither MRBPartialValue nor MRBValue nor AnyMRBValue, unsupported")
         }
     }
 
-    public func apply(context context: MRBContext) -> MRBValue {
+    public func inContext(context: MRBContext) -> MRBValue {
         switch __value {
         case .Partial(let v):
-            return v.apply(context: context)
+            return v.inContext(context)
         case .Complete(let v):
-            return v.apply(context: context)
+            return v.inContext(context)
         }
     }
 

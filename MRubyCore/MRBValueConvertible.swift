@@ -9,7 +9,7 @@
 import MRuby
 
 public protocol MRBValueConvertible {
-    func apply(context context: MRBContext) -> MRBValue
+    func inContext(context: MRBContext) -> MRBValue
 }
 
 public protocol MRBPartialConvertible: MRBValueConvertible {
@@ -17,8 +17,8 @@ public protocol MRBPartialConvertible: MRBValueConvertible {
 }
 
 public extension MRBPartialConvertible {
-    public func apply(context context: MRBContext) -> MRBValue {
-        return partialValue.apply(context: context)
+    public func inContext(context: MRBContext) -> MRBValue {
+        return partialValue.inContext(context)
     }
 }
 
