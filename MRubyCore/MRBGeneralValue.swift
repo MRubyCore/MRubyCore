@@ -13,6 +13,7 @@ import Foundation
 struct MRBGeneralValue: MRBValue, Hashable {
     let rawValue: mrb_value
     unowned let context: MRBContext
+    let _mrbLocalVariableCounterWrapper = _MRBLocalVariableCounterWrapper()
 
     init(value: mrb_value, context: MRBContext) {
         self.rawValue = value

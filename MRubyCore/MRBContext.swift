@@ -58,7 +58,11 @@ public final class MRBContext {
         mrb_close(state)
     }
 
-    public func evaluateScript(script: String, topSelf: MRBValue? = nil) throws -> MRBValue {
+    public func evaluateScript(script: String) throws -> MRBValue {
+        return try topSelf.evaluateScript(script)
+    }
+
+    func evaluateScript(script: String, topSelf: MRBValue, stackKeep: UInt32) throws -> (MRBValue, UInt32) {
         let parser = try getParser(script)
         defer {
             context.memory.lineno += 1
@@ -70,14 +74,14 @@ public final class MRBContext {
             throw Error.ParseError(message: "failed to generate code")
         }
 
-        let value = mrb_context_run(state, proc, (topSelf ?? self.topSelf).rawValue, stackKeep)
-        stackKeep = MRBGetNLocals(proc)
+        let value = mrb_context_run(state, proc, topSelf.rawValue, stackKeep)
+        let stackKeep = MRBGetNLocals(proc)
 
         try checkForRuntimeException()
 
         mrb_gc_arena_restore(state, gcArena)
 
-        return value ⨝ self
+        return (value ⨝ self, stackKeep)
     }
 
     func checkForRuntimeException() throws {
@@ -150,7 +154,7 @@ public func == (lhs: MRBContext, rhs: MRBContext) -> Bool {
     return lhs.state == rhs.state && lhs.context == rhs.context
 }
 
-// MARK - NULL-check extensions for UnsafeMutablePointer
+// MARK: NULL-check extensions for UnsafeMutablePointer
 
 private extension UnsafeMutablePointer {
     static var null: UnsafeMutablePointer {

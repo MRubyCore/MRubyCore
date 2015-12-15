@@ -9,22 +9,25 @@
 import Foundation
 import MRuby
 
+public final class _MRBLocalVariableCounterWrapper {
+    var counter: UInt32 = 0
+}
+
 public protocol MRBValue: CustomDebugStringConvertible, MRBValueConvertible {
     var rawValue: mrb_value { get }
     unowned var context: MRBContext { get }
+    var _mrbLocalVariableCounterWrapper: _MRBLocalVariableCounterWrapper { get }
 }
 
-// MARK - convertible conformance
+// MARK: default property & methods
 
 public extension MRBValue {
-    public var mrbValue: MRBValue {
-        return self
+    public func evaluateScript(script: String) throws -> MRBValue {
+        let (value, stackKeep) = try context.evaluateScript(script, topSelf: self, stackKeep: _mrbLocalVariableCounterWrapper.counter)
+        _mrbLocalVariableCounterWrapper.counter = stackKeep
+        return value
     }
-}
 
-// MARK - default property & methods
-
-public extension MRBValue {
     public var valueType: MRBValueType {
         return MRBValueType(type: MRBGetType(rawValue), value: rawValue)
     }
@@ -44,26 +47,38 @@ public extension MRBValue {
     }
 
     public func send(message: String, parameters: [MRBValueConvertible]) throws -> MRBValue {
-        let returnValue: mrb_value = send(message, parameters: parameters.map { $0.mrbValue })
+        let returnValue: mrb_value = send(message, parameters: parameters.map { $0.apply(context: context) })
         try context.checkForRuntimeException()
         return returnValue ⨝ context
     }
 }
 
-// MARK - Hashable & Equatable conformance, see AnyMRBValue for more impormation
-
+// MARK: MRBParameter conformance
 public extension MRBValue {
+    public func apply(context context: MRBContext) -> MRBValue {
+        assert(self.context == context)
+        return self
+    }
+}
+
+// MARK: Hashable & Equatable conformance, see AnyMRBValue for more impormation
+
+extension MRBValue {
     public var hashValue: Int {
         return Int(MRBReadFixnum(send("hash", parameters: [])))
+    }
+
+    func equalsTo(other: MRBValue) -> Bool {
+        guard context == other.context else { return false }
+        return mrb_equal(context.state, rawValue, other.rawValue) != 0
     }
 }
 
 public func == <T: MRBValue>(lhs: T, rhs: T) -> Bool {
-    guard lhs.context == rhs.context else { return false }
-    return mrb_equal(lhs.context.state, lhs.rawValue, rhs.rawValue) != 0
+    return lhs.equalsTo(rhs)
 }
 
-// MARK - values
+// MARK: values
 
 public extension MRBValue {
     public var arrayValue: [MRBValue]? {

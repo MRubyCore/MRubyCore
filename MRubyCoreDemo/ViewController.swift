@@ -68,21 +68,27 @@ class ViewController: UIViewController {
         print(try! context.evaluateScript("[1, 2.0, 'a']").arrayValue)
         print(try! context.evaluateScript("{a: 3, b: '7', :c => [36], 'd' => {}}").dictionaryValue)
 
-        print(("a" as MRBRangeElementValue).successor())
+        print(("a".apply(context: context) as! MRBRangeElementValue).successor())
 
         print(try! context.evaluateScript("1 .. 10").rangeValue)
         print(try! context.evaluateScript("'a' ... 'z'").rangeValue)
-        print(((1 as MRBRangeElementValue)...(10 as MRBRangeElementValue)).mrbValue)
-        print((1...10).mrbValue)
-        print(Array(1...10).mrbValue)
-        print([1, 2, 3].mrbValue)
-        print([1: 2].mrbValue)
+        print((1...10).apply(context: context))
+        print(Array(1...10).apply(context: context))
+        print([1, 2, 3].apply(context: context))
+        print([1: 2].apply(context: context))
 
         do {
             print(try context.evaluateScript("a = 1; b = [1, 2, 3]; c = \"6\""))
             print(try context.evaluateScript("a"))
             print(try context.evaluateScript("b"))
             print(try context.evaluateScript("c"))
+
+            let classA = try context.evaluateScript("class A; end")
+            let instanceA = try context.evaluateScript("A.new")
+            try classA.evaluateScript("def f; p 123; end")
+            print(try instanceA.send("f", parameters: []))
+
+            print(try "1".apply(context: context).evaluateScript("xxxx = 9"))
         }
         catch {
             print(error)

@@ -14,6 +14,7 @@ import MRuby
 public struct MRBRangeElementValue: MRBValue {
     public let rawValue: mrb_value
     public unowned let context: MRBContext
+    public let _mrbLocalVariableCounterWrapper = _MRBLocalVariableCounterWrapper()
 
     init(value: mrb_value, context: MRBContext) {
         self.rawValue = value

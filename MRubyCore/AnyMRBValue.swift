@@ -8,28 +8,54 @@
 
 import Foundation
 
-/// Contains a MRBValue
-///
-/// Every `MRBValue` is supposed to be `Hashable`.
-/// However, due to the lack of supports for
-/// generic protocol types, We have to create
-/// a container type to use `MRBValue` as `Dictionary.Key`
-public struct AnyMRBValue: MRBValue, Hashable {
-    private let __value: MRBValue
-
-    init(_ value: MRBValue) {
-        __value = value
+public struct AnyMRBValue: Hashable, MRBValueConvertible {
+    enum AnyValue {
+        case Partial(MRBPartialValue)
+        case Complete(MRBValue)
     }
 
-    public var rawValue: mrb_value {
-        return __value.rawValue
+    private let __value: AnyValue
+
+    init(_ value: MRBValueConvertible) {
+        switch value {
+        case let v as MRBPartialValue: __value = .Partial(v)
+        case let v as MRBValue: __value = .Complete(v)
+        case let v as AnyMRBValue: __value = v.__value
+        case let v as MRBPartialConvertible: __value = .Partial(v.partialValue)
+        default:
+            print(value, value.dynamicType)
+            fatalError("value is neither MRBPartialValue nor MRBValue nor AnyMRBValue, unsupported")
+        }
     }
 
-    public unowned var context: MRBContext {
-        return __value.context
+    public func apply(context context: MRBContext) -> MRBValue {
+        switch __value {
+        case .Partial(let v):
+            return v.apply(context: context)
+        case .Complete(let v):
+            return v.apply(context: context)
+        }
     }
 
-    public var mrbValue: MRBValue {
-        return __value
+    public var hashValue: Int {
+        switch __value {
+        case .Partial(let v): return v.hashValue
+        case .Complete(let v): return v.hashValue
+        }
+    }
+}
+
+public func == (lhs: AnyMRBValue, rhs: AnyMRBValue) -> Bool {
+    switch lhs.__value {
+    case .Partial(let v0):
+        switch rhs.__value {
+        case .Partial(let v1): return v0 == v1
+        default: return false
+        }
+    case .Complete(let v0):
+        switch rhs.__value {
+        case .Complete(let v1): return v0.equalsTo(v1)
+        default: return false
+        }
     }
 }

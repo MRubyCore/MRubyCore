@@ -6,76 +6,58 @@
 //  Copyright © 2015年 rubyist.today. All rights reserved.
 //
 
-import Foundation
 import MRuby
 
-extension MRBRangeElementValue: IntegerLiteralConvertible {
+extension MRBPartialValue: IntegerLiteralConvertible {
     public init(integerLiteral value: mrb_int) {
-        guard let context = MRBContext.currentContext() else {
-            fatalError("invalid context")
-        }
-
-        self.init(value: mrb_fixnum_value(value), context: context)
+        self = .Integer(value)
     }
 }
 
-extension MRBGeneralValue: FloatLiteralConvertible {
-    init(floatLiteral value: mrb_float) {
-        guard let context = MRBContext.currentContext() else {
-            fatalError("invalid context")
-        }
-
-        self.init(value: mrb_float_value(context.state, value), context: context)
+extension MRBPartialValue: FloatLiteralConvertible {
+    public init(floatLiteral value: mrb_float) {
+        self = .Float(value)
     }
 }
 
-extension MRBGeneralValue: NilLiteralConvertible {
-    init(nilLiteral: ()) {
-        guard let context = MRBContext.currentContext() else {
-            fatalError("invalid context")
-        }
-
-        self.init(value: mrb_nil_value(), context: context)
+extension MRBPartialValue: NilLiteralConvertible {
+    public init(nilLiteral: ()) {
+        self = .Nil()
     }
 }
 
-extension MRBRangeElementValue: StringLiteralConvertible, UnicodeScalarLiteralConvertible, ExtendedGraphemeClusterLiteralConvertible {
-    public init(stringLiteral value: String) {
-        guard let context = MRBContext.currentContext() else {
-            fatalError("invalid context")
-        }
-
-        let cstr = value.cStringUsingEncoding(NSUTF8StringEncoding)!
-        self.init(value: mrb_str_new_cstr(context.state, cstr), context: context)
+extension MRBPartialValue: StringLiteralConvertible, UnicodeScalarLiteralConvertible, ExtendedGraphemeClusterLiteralConvertible {
+    public init(stringLiteral value: Swift.String) {
+        self = .String(value)
     }
 
-    public init(unicodeScalarLiteral value: String) {
+    public init(unicodeScalarLiteral value: Swift.String) {
         self.init(stringLiteral: value)
     }
 
-    public init(extendedGraphemeClusterLiteral value: String) {
+    public init(extendedGraphemeClusterLiteral value: Swift.String) {
         self.init(stringLiteral: value)
     }
 }
 
-extension MRBGeneralValue: BooleanLiteralConvertible {
-    init(booleanLiteral value: Bool) {
-        guard let context = MRBContext.currentContext() else {
-            fatalError("invalid context")
-        }
-
-        self.init(value: mrb_bool_value(value ? 1 : 0), context: context)
+extension MRBPartialValue: BooleanLiteralConvertible {
+    public init(booleanLiteral value: Swift.Bool) {
+        self = .Bool(value)
     }
 }
 
-extension AnyMRBValue: ArrayLiteralConvertible {
+extension MRBPartialValue: ArrayLiteralConvertible {
     public init(arrayLiteral elements: MRBValueConvertible...) {
-        self = AnyMRBValue(elements.mrbValue)
+        self = .Array(elements)
     }
 }
 
-extension AnyMRBValue: DictionaryLiteralConvertible {
+extension MRBPartialValue: DictionaryLiteralConvertible {
     public init(dictionaryLiteral elements: (MRBValueConvertible, MRBValueConvertible)...) {
-        self = AnyMRBValue(↢elements)
+        self = .Dictionary(elements.reduce([:]) { m, kv in
+            var m = m
+            m[AnyMRBValue(kv.0)] = kv.1
+            return m
+        })
     }
 }
