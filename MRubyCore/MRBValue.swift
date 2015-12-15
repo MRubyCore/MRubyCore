@@ -53,7 +53,7 @@ public extension MRBValue {
     }
 }
 
-// MARK: MRBParameter conformance
+// MARK: MRBValueConvertible conformance
 public extension MRBValue {
     public func apply(context context: MRBContext) -> MRBValue {
         assert(self.context == context)
