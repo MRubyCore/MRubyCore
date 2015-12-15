@@ -51,6 +51,14 @@ public extension MRBValue {
         try context.checkForRuntimeException()
         return returnValue ⨝ context
     }
+
+    public var constants: Constants {
+        return Constants(of: self)
+    }
+
+    public var localVariables: LocalVariables {
+        return LocalVariables(of: self)
+    }
 }
 
 // MARK: MRBValueConvertible conformance

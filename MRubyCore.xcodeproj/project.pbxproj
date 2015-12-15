@@ -26,6 +26,7 @@
 		8C390C401C1678D500DCE35F /* misc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C390C3F1C1678D500DCE35F /* misc.swift */; };
 		8C6183C01C1FB69900747B7B /* MRBValueConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6183BF1C1FB69900747B7B /* MRBValueConvertible.swift */; };
 		8C6183C21C1FF04500747B7B /* MRBRangeElementValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6183C11C1FF04500747B7B /* MRBRangeElementValue.swift */; };
+		8C6183C41C1FF99800747B7B /* subscripts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6183C31C1FF99800747B7B /* subscripts.swift */; };
 		8C86E6FC1C14283000A58FCA /* MRuby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C86E6FB1C14283000A58FCA /* MRuby.framework */; };
 		8CFE6D421C1FACBE00F65259 /* MRBPartialValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE6D411C1FACBD00F65259 /* MRBPartialValue.swift */; };
 /* End PBXBuildFile section */
@@ -76,6 +77,7 @@
 		8C390C3F1C1678D500DCE35F /* misc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = misc.swift; sourceTree = "<group>"; };
 		8C6183BF1C1FB69900747B7B /* MRBValueConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRBValueConvertible.swift; sourceTree = "<group>"; };
 		8C6183C11C1FF04500747B7B /* MRBRangeElementValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRBRangeElementValue.swift; sourceTree = "<group>"; };
+		8C6183C31C1FF99800747B7B /* subscripts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = subscripts.swift; sourceTree = "<group>"; };
 		8C86E6FB1C14283000A58FCA /* MRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MRuby.framework; sourceTree = "<group>"; };
 		8CFE6D411C1FACBD00F65259 /* MRBPartialValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRBPartialValue.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -141,6 +143,7 @@
 				8C390C3F1C1678D500DCE35F /* misc.swift */,
 				8C2268F31C181D930082600C /* operators.swift */,
 				8C2268EF1C1813410082600C /* literals.swift */,
+				8C6183C31C1FF99800747B7B /* subscripts.swift */,
 				8CFE6D411C1FACBD00F65259 /* MRBPartialValue.swift */,
 				8C6183BF1C1FB69900747B7B /* MRBValueConvertible.swift */,
 				8C1CC5F11C180A89009189EE /* AnyMRBValue.swift */,
@@ -289,6 +292,7 @@
 				8C390C401C1678D500DCE35F /* misc.swift in Sources */,
 				8C6183C21C1FF04500747B7B /* MRBRangeElementValue.swift in Sources */,
 				8CFE6D421C1FACBE00F65259 /* MRBPartialValue.swift in Sources */,
+				8C6183C41C1FF99800747B7B /* subscripts.swift in Sources */,
 				8C6183C01C1FB69900747B7B /* MRBValueConvertible.swift in Sources */,
 				8C19BD871C11606B00B5635D /* MRBValueType.swift in Sources */,
 				8C19BD8B1C11639100B5635D /* MRBValue.swift in Sources */,

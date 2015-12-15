@@ -58,6 +58,14 @@ public final class MRBContext {
         mrb_close(state)
     }
 
+    public var constants: Constants {
+        return Constants(of: try! evaluateScript("Module"))
+    }
+
+    public var localVariables: LocalVariables {
+        return LocalVariables(of: topSelf)
+    }
+
     public func evaluateScript(script: String) throws -> MRBValue {
         return try topSelf.evaluateScript(script)
     }

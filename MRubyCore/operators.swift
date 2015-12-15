@@ -9,7 +9,6 @@
 import Foundation
 
 infix operator ⨝ { associativity none precedence 255 }
-prefix operator ↢ { }
 
 /// Create a MRBValue
 /// from given mrb_value and MRBContext

@@ -79,16 +79,27 @@ class ViewController: UIViewController {
 
         do {
             print(try context.evaluateScript("a = 1; b = [1, 2, 3]; c = \"6\""))
-            print(try context.evaluateScript("a"))
-            print(try context.evaluateScript("b"))
-            print(try context.evaluateScript("c"))
+            print(context.localVariables["a"])
+            print(context.localVariables["b"])
+            print(context.localVariables["c"])
 
-            let classA = try context.evaluateScript("class A; end")
+            try context.evaluateScript("class A; end")
+            let classA = context.constants["A"]!
             let instanceA = try context.evaluateScript("A.new")
             try classA.evaluateScript("def f; p 123; end")
+            try classA.evaluateScript("AAA = 1")
             print(try instanceA.send("f", parameters: []))
 
-            print(try "1".apply(context: context).evaluateScript("xxxx = 9"))
+            print("classA is ", classA)
+            print("instanceA is", instanceA)
+
+            print(classA.constants["AAA"])
+
+            let one = "1".apply(context: context)
+
+            print(try one.evaluateScript("xxxx = 9"))
+            print(one.localVariables["xxxx"])
+            print("1".apply(context: context).localVariables["xxxx"])
         }
         catch {
             print(error)
