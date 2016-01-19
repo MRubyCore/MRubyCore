@@ -53,7 +53,7 @@ public func == (lhs: AnyMRBValue, rhs: AnyMRBValue) -> Bool {
         }
     case .Complete(let v0):
         switch rhs.__value {
-        case .Complete(let v1): return v0.equalsTo(v1)
+        case .Complete(let v1): return v0 == v1
         default: return false
         }
     }

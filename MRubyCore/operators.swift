@@ -14,8 +14,8 @@ infix operator ⨝ { associativity none precedence 255 }
 /// from given mrb_value and MRBContext
 func ⨝ (lhs: mrb_value, rhs: MRBContext) -> MRBValue {
     if MRBRangeElementValue.eligible(lhs, context: rhs) {
-        return MRBRangeElementValue(value: lhs, context: rhs)
+        return MRBRangeElementValue(rawValue: lhs, context: rhs)
     }
 
-    return MRBGeneralValue(value: lhs, context: rhs)
+    return MRBValue(rawValue: lhs, context: rhs)
 }

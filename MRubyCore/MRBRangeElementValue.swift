@@ -11,26 +11,13 @@ import MRuby
 
 /// Holds mruby value of type:
 /// mrb_int, string, and any value that respond_to :<=> and :succ
-public struct MRBRangeElementValue: MRBValue {
-    public let rawValue: mrb_value
-    public unowned let context: MRBContext
-    public let _mrbLocalVariableCounterWrapper = _MRBLocalVariableCounterWrapper()
-
-    init(value: mrb_value, context: MRBContext) {
-        self.rawValue = value
-        self.context = context
-    }
-}
-
-extension MRBRangeElementValue {
+public final class MRBRangeElementValue: MRBValue, ForwardIndexType {
     static func eligible(value: mrb_value, context: MRBContext) -> Bool {
         return mrb_respond_to(context.state, value, "succ".toSym(inContext: context)) != 0 &&
-               mrb_respond_to(context.state, value, "<=>".toSym(inContext: context)) != 0
+            mrb_respond_to(context.state, value, "<=>".toSym(inContext: context)) != 0
     }
-}
 
-extension MRBRangeElementValue: ForwardIndexType {
     public func successor() -> MRBRangeElementValue {
-        return try! send("succ", parameters: []) as! MRBRangeElementValue
+        return MRBRangeElementValue(mrbValue: try! send("succ", parameters: []))
     }
 }

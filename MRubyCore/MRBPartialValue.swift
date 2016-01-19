@@ -15,9 +15,9 @@ public enum MRBPartialValue {
     case Nil()
     case String(Swift.String)
     case Bool(Swift.Bool)
-    indirect case Array([MRBValueConvertible])
-    indirect case Dictionary([AnyMRBValue: MRBValueConvertible])
-    indirect case Range(MRBValueConvertible, MRBValueConvertible)
+    case Array([MRBValueConvertible])
+    case Dictionary([AnyMRBValue: MRBValueConvertible])
+    case Range(MRBValueConvertible, MRBValueConvertible)
 }
 
 extension MRBPartialValue: MRBValueConvertible {

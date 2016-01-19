@@ -15,11 +15,6 @@ public final class MRBContext {
         case RuntimeException(message: String)
     }
 
-    private static let currentContextIdentifier = "MRBContext_" + NSUUID().UUIDString
-    static func currentContext() -> MRBContext? {
-        return NSThread.currentThread().threadDictionary.objectForKey(MRBContext.currentContextIdentifier) as? MRBContext
-    }
-
     let state: UnsafeMutablePointer<mrb_state>
     let context: UnsafeMutablePointer<mrbc_context>
     let gcArena: Int32
@@ -30,14 +25,13 @@ public final class MRBContext {
     }()
 
     public init() {
-        state = mrb_open()
-        if state.isNull {
-            context = UnsafeMutablePointer<mrbc_context>.null
+        let state = mrb_open()
+        guard state != UnsafeMutablePointer<mrb_state>() else {
             fatalError("mrb_open() failed")
         }
 
-        context = mrbc_context_new(state)
-        if context.isNull {
+        let context = mrbc_context_new(state)
+        guard context != UnsafeMutablePointer<mrbc_context>() else {
             mrb_close(state)
             fatalError("mrbc_context_new() failed")
         }
@@ -45,12 +39,13 @@ public final class MRBContext {
         context.memory.capture_errors = 1
         context.memory.lineno = 1
 
-        var filename = "(MRBContext) ".cStringUsingEncoding(NSUTF8StringEncoding)!
-        mrbc_filename(state, context, &filename)
+        "(MRBContext) ".withCString {
+            mrbc_filename(state, context, $0)
+        }
 
-        gcArena = mrb_gc_arena_save(state)
-
-        NSThread.currentThread().threadDictionary.setObject(self, forKey: MRBContext.currentContextIdentifier)
+        self.state = state
+        self.context = context
+        self.gcArena = mrb_gc_arena_save(state)
     }
 
     deinit {
@@ -103,19 +98,15 @@ public final class MRBContext {
     private func getParser(script: String) throws -> UnsafeMutablePointer<mrb_parser_state> {
         // inspired by mrbgems/mruby-bin-mirb/tools/mirb/mirb.c
 
-        guard var s = script.cStringUsingEncoding(NSUTF8StringEncoding) else {
-            throw Error.ParseError(message: "invalid input string")
-        }
-
         let parser = mrb_parser_new(state)
 
         if parser.isNull {
             throw Error.ParseError(message: "failed to create parser")
         }
 
-        withUnsafePointer(&s[0]) {
+        script.withCString {
             parser.memory.s = $0
-            parser.memory.send = $0.advancedBy(s.count)
+            parser.memory.send = $0.advancedBy(script.utf8.count)
         }
 
         parser.memory.lineno = parser.memory.lineno.dynamicType.init(context.memory.lineno)
